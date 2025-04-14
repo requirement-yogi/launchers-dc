@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jira-database-config>
+  <!-- It will have to be set manually (never succeeded to make it work, Jira complains MySQL 8.0 ≠ MySQL -->
+</jira-database-config>

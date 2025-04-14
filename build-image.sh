@@ -138,6 +138,8 @@ else
     echo
     echo "Usage: ./build-image.sh ( confluence | jira ) ( 7.19.0 | 8.5.0 | ...) [--apple-but-skip-building|--mysql]"
     echo "       --mysql builds the Jira image for MySQL. For Confluence, you can just change the docker-compose.yml"
+    echo "       --skip-etchosts By default, the script fails if the user forgot to add the new hostname in /etc/hosts,"
+    echo "                       but this flag is able to skip this check."
     echo
     exit 1
 fi
@@ -148,6 +150,7 @@ set -e
 APPLE="false"
 SKIP_BUILDING="false"
 APPLE_SUFFIX=""
+SKIP_ETC_HOSTS="false"
 if [[ $(uname -m) == 'arm64' ]]; then
     # It's an M-series processor
     APPLE="true"
@@ -158,8 +161,8 @@ if [[ $# -eq 3 ]] ; then
         APPLE="true"
         APPLE_SUFFIX="-apple"
         SKIP_BUILDING="true"
-    elif [[ "$3" == "--mysql" ]] ; then
-        JIRA_DBCONFIG_FILE="jira-dbconfig-mysql.xml"
+    elif [[ "$3" == "--skip-etchosts" ]] ; then
+        SKIP_ETC_HOSTS="true"
     fi
 fi
 
@@ -189,7 +192,8 @@ if [ ! -f "./docker/tmp/quickreload-${QR_VERSION}.jar" ] || [ ! -f "./docker/tmp
     if [ ! -f "${QR_PATH}" ] ; then
         mvn dependency:get \
             -Dartifact=com.atlassian.labs.plugins:quickreload:${QR_VERSION} \
-            -Dtransitive=false
+            -Dtransitive=false \
+            -DrepoUrl=https://packages.atlassian.com/mvn/maven-atlassian-external
     fi
 
     cp ${QR_PATH} ./docker/tmp/quickreload-${QR_VERSION}.jar # Will be uploaded into the VM

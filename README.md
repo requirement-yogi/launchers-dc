@@ -1,4 +1,4 @@
-# Launch Confluence and Jira - Data Center - Public
+# Docker launchers for Confluence and Jira - Data Center - Public
 
 This repository builds Docker images that can be launched for every supported version of Confluence and Jira.
 
