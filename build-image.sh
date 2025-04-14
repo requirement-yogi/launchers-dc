@@ -14,95 +14,131 @@ elif [[ "$APP" == "jira" ]] ; then
 fi
 CONTEXT_PATH="/${LETTER}-app"
 
-if [[ "$APP" == "confluence" && "$2" == "7.19."* ]] ; then
-    PORT_HTTP="2000"
-    PORT_DEBUG="5005"
-    PORT_DB="5401"
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "confluence" && "$2" == "8.5."* ]] ; then
-    PORT_HTTP="2001"
-    PORT_DEBUG="5006"
-    PORT_DB="5402"
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "confluence" && "$2" == "8.8."* ]] ; then
-    PORT_HTTP="2002"
-    PORT_DEBUG="5007"
-    PORT_DB="5402"
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "confluence" && "$2" == "8.9."* ]] ; then
-    PORT_HTTP="2003"
-    PORT_DEBUG="5008"
-    PORT_DB="5403"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "confluence" && "$2" == "9.0."* ]] ; then
-    PORT_HTTP="2004"
-    PORT_DEBUG="5009"
-    PORT_DB="5404"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "confluence" && "$2" == "9.1."* ]] ; then
-    PORT_HTTP="2010"
-    PORT_DEBUG="5014"
-    PORT_DB="5410"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "confluence" && "$2" == "9.2."* ]] ; then
-    PORT_HTTP="2011"
-    PORT_DEBUG="5015"
-    PORT_DB="5411"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "confluence" && "$2" == "9.3."* ]] ; then
-    PORT_HTTP="2012"
-    PORT_DEBUG="5016"
-    PORT_DB="5412"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "confluence" && "$2" == "9.4."* ]] ; then
-    PORT_HTTP="2013"
-    PORT_DEBUG="5017"
-    PORT_DB="5413"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "jira" && "$2" == "9.4."* ]] ; then
-    PORT_HTTP="2005"
-    PORT_DEBUG="5010"
-    PORT_DB="5405"
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "jira" && "$2" == "9.12."* ]] ; then
-    PORT_HTTP="2006"
-    PORT_DEBUG="5011"
-    PORT_DB="5406"
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "jira" && "$2" == "9.17."* ]] ; then
-    PORT_HTTP="2008"
-    PORT_DEBUG="5012"
-    PORT_DB="5408"
-    # It seems Jira 9.15.0 and above were only published as JDK 11, surprisingly:
-    # https://hub.docker.com/r/atlassian/jira-software/tags?page=&page_size=&ordering=&name=9.15.0-jdk
-    JDK="jdk11"
-    BASE_IMAGE="eclipse-temurin:11"
-elif [[ "$APP" == "jira" && "$2" == "10.0."* ]] ; then
-    PORT_HTTP="2009"
-    PORT_DEBUG="5013"
-    PORT_DB="5409"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
-elif [[ "$APP" == "jira" && "$2" == "10.3."* ]] ; then
-    PORT_HTTP="2030"
-    PORT_DEBUG="5030"
-    PORT_DB="5430"
-    JDK="jdk17"
-    BASE_IMAGE="eclipse-temurin:17"
+if [[ "$APP" == "confluence" ]] ; then
+    if [[ "$2" == "7.19."* ]] ; then
+        PORT_HTTP="2000"
+        PORT_DEBUG="5005"
+        PORT_DB="5401"
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "8.5."* ]] ; then
+        PORT_HTTP="2001"
+        PORT_DEBUG="5006"
+        PORT_DB="5402"
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "8.8."* ]] ; then
+        PORT_HTTP="2002"
+        PORT_DEBUG="5007"
+        PORT_DB="5402"
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "8.9."* ]] ; then
+        PORT_HTTP="2003"
+        PORT_DEBUG="5008"
+        PORT_DB="5403"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "9.0."* ]] ; then
+        PORT_HTTP="2004"
+        PORT_DEBUG="5009"
+        PORT_DB="5404"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "9.1."* ]] ; then
+        PORT_HTTP="2010"
+        PORT_DEBUG="5014"
+        PORT_DB="5410"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "9.2."* ]] ; then
+        PORT_HTTP="2011"
+        PORT_DEBUG="5015"
+        PORT_DB="5411"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "9.3."* ]] ; then
+        PORT_HTTP="2012"
+        PORT_DEBUG="5016"
+        PORT_DB="5412"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "9.4."* ]] ; then
+        PORT_HTTP="2013"
+        PORT_DEBUG="5017"
+        PORT_DB="5413"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    else
+        echo
+        echo "Unknown Confluence version: $2"
+        echo "See https://hub.docker.com/r/atlassian/confluence/tags"
+        echo "https://www.atlassian.com/software/confluence/download-archives"
+        echo
+        exit 1
+    fi
+
+elif [[ "$APP" == "jira" ]] ; then
+    if [[ "$2" == "9.4."* ]] ; then
+        PORT_HTTP="2005"
+        PORT_DEBUG="5010"
+        PORT_DB="5405"
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "9.12."* ]] ; then
+        PORT_HTTP="2006"
+        PORT_DEBUG="5011"
+        PORT_DB="5406"
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "9.17."* ]] ; then
+        PORT_HTTP="2008"
+        PORT_DEBUG="5012"
+        PORT_DB="5408"
+        # It seems Jira 9.15.0 and above were only published as JDK 11, surprisingly:
+        # https://hub.docker.com/r/atlassian/jira-software/tags?page=&page_size=&ordering=&name=9.15.0-jdk
+        JDK="jdk11"
+        BASE_IMAGE="eclipse-temurin:11"
+    elif [[ "$2" == "10.0."* ]] ; then
+        PORT_HTTP="2009"
+        PORT_DEBUG="5013"
+        PORT_DB="5409"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "10.3."* ]] ; then
+        PORT_HTTP="2030"
+        PORT_DEBUG="5030"
+        PORT_DB="5430"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "10.4."* ]] ; then
+        PORT_HTTP="2031"
+        PORT_DEBUG="5031"
+        PORT_DB="5431"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "10.5."* ]] ; then
+        PORT_HTTP="2032"
+        PORT_DEBUG="5032"
+        PORT_DB="5432"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+    else
+        echo
+        echo "Unknown Jira version: $2"
+        echo "See https://hub.docker.com/r/atlassian/jira-software"
+        echo "https://www.atlassian.com/software/jira/download-archives"
+        echo
+        exit 1
+    fi
+elif [[ -n "$APP" ]] ; then
+    echo "App not supported: $APP"
+    exit 1
 else
+    echo
     echo "Usage: ./build-image.sh ( confluence | jira ) ( 7.19.0 | 8.5.0 | ...) [--apple-but-skip-building|--mysql]"
     echo "       --mysql builds the Jira image for MySQL. For Confluence, you can just change the docker-compose.yml"
+    echo
     exit 1
 fi
 
@@ -247,14 +283,16 @@ envsubst < docker/app-nginx.conf > ${FOLDER_NAME}/app-nginx.conf
 docker network create shared-network 2> /dev/null || true
 
 echo
-echo "Created: ${FOLDER_NAME}/docker-compose.yml"
+echo "=== Created: ${FOLDER_NAME}/docker-compose.yml ==="
 echo
 
-if ! grep -q "${LETTER}${APP_VERSION}\.local" /etc/hosts ; then
-    echo "Missing entry in /etc/hosts: 127.0.0.1 ${LETTER}${APP_VERSION}.local"
-fi
 echo "cd ${FOLDER_NAME}"
-echo "docker-compose up --detach"
+echo "docker compose up --detach"
 echo "tail -f logs/atlassian-$APP.log"
 echo "http://${LETTER}${APP_VERSION}.local:${PORT_HTTP}${CONTEXT_PATH}"
 echo "Ready."
+
+if ! grep -q "${LETTER}${APP_VERSION}\.local" /etc/hosts ; then
+    echo -e "Missing entry in /etc/hosts. Please enter:\n127.0.0.1 ${LETTER}${APP_VERSION}.local"
+    exit 9
+fi

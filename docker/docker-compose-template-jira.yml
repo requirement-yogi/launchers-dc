@@ -1,17 +1,17 @@
 version: '3.1'
 
 # Instructions:
-# docker-compose up [--detach]
-# docker-compose logs --follow
-# docker-compose stop
-# docker-compose down
+# docker compose up [--detach]
+# docker compose logs --follow
+# docker compose stop
+# docker compose down
 #
 # Edit your /etc/hosts
 # 127.0.0.1 ${LETTER}${APP_VERSION}.local
 #
 # http://${LETTER}${APP_VERSION}.local:${PORT_HTTP}/jira
 #
-# Get the license from https://requirementyogi.atlassian.net/wiki/spaces/TEAM/pages/1844413025/Cl+s+de+licenses
+# Get the license from https://requirementyogi.atlassian.net/wiki/spaces/TEAM/pages/1844413025/License+keys
 # To set up the database in Jira:
 #    jdbc:postgresql://postgres:5432/jira # Don't forget 'postgres', and use localhost:${PORT_DB} from IntelliJ
 #    Username: jira

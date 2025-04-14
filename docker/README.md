@@ -10,7 +10,7 @@ Run `build-images.sh` to build all most important images. You can also build ind
 with `build-image.sh`, using examples from the former script.
 
 It creates a directory for each version + a docker-compose.yml file.
-Go to that directory and run `docker-compose up` and magic will happen.
+Go to that directory and run `docker compose up` and magic will happen.
 The .jar files of plugins to install can go to the `quickreload` directory.
 
 ## Big tips
