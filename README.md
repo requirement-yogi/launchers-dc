@@ -10,7 +10,7 @@ cd confluence-9.4.0
 docker compose up --detach
 ```
 
-## Where are the logs? What is the password to the database?
+## Where are the logs? What is the password to the database? What is even the URL of Confluence!?
 
 Everything is written in `confluence-9.4.0/docker-compose.yml` (depending on your app and version).
 

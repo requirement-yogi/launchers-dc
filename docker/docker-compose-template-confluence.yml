@@ -7,18 +7,19 @@ version: '3.1'
 # docker compose down
 #
 # Edit your /etc/hosts
-# 127.0.0.1 c${APP_VERSION}.local
+# 127.0.0.1 ${LETTER}${APP_VERSION}.local
 #
-# http://c${APP_VERSION}.local:${PORT_HTTP}/${CONTEXT_PATH}
+# ${PROXY_SCHEME}://${PROXY_DOMAIN}:${PROXY_PORT}${CONTEXT_PATH}
 #
 # Get the license from https://requirementyogi.atlassian.net/wiki/spaces/TEAM/pages/1844413025/License+keys
 # To set up the database in Confluence:
-#    jdbc:postgresql://postgres:5432/confluence # Don't forget 'postgres', and use localhost:${PORT_DB} from IntelliJ
+#    jdbc:postgresql://postgres:5432/confluence # In the setup wizard, replace 'lcoalhost' with 'postgres'
+#    jdbc:postgresql://localhost:${PORT_DB}/${APP} # For IntelliJ
 #    Username: confluence
 #    Password: confluence
 # Please your jars in `realpath ./quickreload` to be reloaded
 # To set up the database in IntelliJ: jdbc:postgresql://localhost:${PORT_DB}/confluence
-# Log files are in ./confluence-home/logs/atlassian-confluence.lg
+# Log files are in ./logs/atlassian-confluence.log
 
 services:
 
@@ -35,9 +36,11 @@ services:
        -Datlassian.dev.mode=true
        -Dupm.plugin.upload.enabled=true
        -Dquickreload.dirs=/plugin"
-      - "ATL_PROXY_NAME=${LETTER}${APP_VERSION}.local"
-      - "ATL_PROXY_PORT=${PORT_HTTP}"
+      - "ATL_PROXY_NAME=${PROXY_DOMAIN}"
+      - "ATL_PROXY_PORT=${PROXY_PORT}"
       - "ATL_TOMCAT_CONTEXTPATH=${CONTEXT_PATH}"
+      - "ATL_TOMCAT_SCHEME=${PROXY_SCHEME}"
+      - "ATL_TOMCAT_SECURE=${PROXY_SECURE}"
     ports:
       - ${PORT_DEBUG}:5005
       - ${PORT_HTTP}:8090
@@ -51,7 +54,7 @@ services:
       shared-network:
 
   # Redirects http://${LETTER}${APP_VERSION}.local:${PORT_HTTP} inside the network,
-  # to http://jira:${PORT_INTERNAL}
+  # to http://confluence:${PORT_INTERNAL}
   nginx:
     image: nginx:1.24.0-alpine
     container_name: "${LETTER}${APP_VERSION}.local"

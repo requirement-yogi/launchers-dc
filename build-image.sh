@@ -136,7 +136,8 @@ elif [[ -n "$APP" ]] ; then
     exit 1
 else
     echo
-    echo "Usage: ./build-image.sh ( confluence | jira ) ( 7.19.0 | 8.5.0 | ...) [--apple-but-skip-building|--mysql]"
+    echo "Usage: ./build-image.sh ( confluence | jira ) ( 7.19.0 | 8.5.0 | ...) [--apple-but-skip-building|...]"
+    echo "       --apple-but-skip-building just rebuilds the docker-compose.yml, but not the image"
     echo "       --mysql builds the Jira image for MySQL. For Confluence, you can just change the docker-compose.yml"
     echo "       --skip-etchosts By default, the script fails if the user forgot to add the new hostname in /etc/hosts,"
     echo "                       but this flag is able to skip this check."
@@ -166,10 +167,30 @@ if [[ $# -eq 3 ]] ; then
     fi
 fi
 
+# We set "proxy" variables for the reverse http proxy. By default you will access it locally on your computer,
+# but if you are performing DC tests, you will override those values to execute from a domain name.
+if [[ -z "${PROXY_DOMAIN-}" ]] ; then
+    PROXY_DOMAIN="${LETTER}${APP_VERSION}.local"
+fi
+if [[ -z "${PROXY_PORT-}" ]] ; then
+    PROXY_PORT="${PORT_HTTP}"
+fi
+if [[ "${PROXY_HTTPS-}" == "true" ]] ; then
+    PROXY_SCHEME="https"
+    PROXY_SECURE="true"
+else
+    PROXY_SCHEME="http"
+    PROXY_SECURE="false"
+fi
+
 echo "APP=$APP"
 echo "LETTER=$LETTER"
 echo "PORT_INTERNAL=$PORT_INTERNAL"
 echo "PORT_HTTP=$PORT_HTTP"
+echo "PROXY_DOMAIN=$PROXY_DOMAIN"
+echo "PROXY_PORT=$PROXY_PORT"
+echo "PROXY_SCHEME=$PROXY_SCHEME"
+echo "PROXY_SECURE=$PROXY_SECURE"
 echo "PORT_DEBUG=$PORT_DEBUG"
 echo "PORT_DB=$PORT_DB"
 echo "APP_VERSION=$APP_VERSION"
@@ -264,6 +285,10 @@ cd -
 export APP
 export LETTER
 export CONTEXT_PATH
+export PROXY_DOMAIN
+export PROXY_PORT
+export PROXY_SCHEME
+export PROXY_SECURE
 export PORT_DEBUG
 export PORT_DB
 export PORT_HTTP
@@ -279,9 +304,12 @@ export MYSQL_VERSION
 FOLDER_NAME="${APP}-${APP_VERSION}${APPLE_SUFFIX}"
 
 [ -d "./${FOLDER_NAME}" ] || mkdir ${FOLDER_NAME}
+
 # It interprets the variables
 envsubst < docker/docker-compose-template-${APP}.yml > ${FOLDER_NAME}/docker-compose.yml
 envsubst < docker/app-nginx.conf > ${FOLDER_NAME}/app-nginx.conf
+envsubst < docker/image-information.md > ${FOLDER_NAME}/README.md
+
 
 # Necessary to connect Confluence and Jira together
 docker network create shared-network 2> /dev/null || true
@@ -293,10 +321,10 @@ echo
 echo "cd ${FOLDER_NAME}"
 echo "docker compose up --detach"
 echo "tail -f logs/atlassian-$APP.log"
-echo "http://${LETTER}${APP_VERSION}.local:${PORT_HTTP}${CONTEXT_PATH}"
+echo "${PROXY_SCHEME}://${PROXY_DOMAIN}:${PROXY_PORT}${CONTEXT_PATH}"
 echo "Ready."
 
-if ! grep -q "${LETTER}${APP_VERSION}\.local" /etc/hosts ; then
+if [[ "$SKIP_ETC_HOSTS" == "false" ]] && ! grep -q "${LETTER}${APP_VERSION}\.local" /etc/hosts ; then
     echo -e "Missing entry in /etc/hosts. Please enter:\n127.0.0.1 ${LETTER}${APP_VERSION}.local"
     exit 9
 fi
