@@ -69,6 +69,12 @@ if [[ "$APP" == "confluence" ]] ; then
         PORT_DB="5413"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
+    elif [[ "$2" == "10.0."* ]] ; then
+        PORT_HTTP="2014"
+        PORT_DEBUG="5018"
+        PORT_DB="5414"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
     else
         echo
         echo "Unknown Confluence version: $2"
