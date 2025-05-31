@@ -168,6 +168,11 @@ if [[ $# -eq 3 ]] ; then
         APPLE="true"
         APPLE_SUFFIX="-apple"
         SKIP_BUILDING="true"
+    elif [[ "$3" == "--apple-but-use-amd64" ]] ; then
+        # The Confluence 10 "aarch64" for Apple M doesn't seem to be built well by the Bitbucket repo
+        APPLE="false"
+        APPLE_SUFFIX=""
+        SKIP_BUILDING="true"
     elif [[ "$3" == "--skip-etchosts" ]] ; then
         SKIP_ETC_HOSTS="true"
     fi
