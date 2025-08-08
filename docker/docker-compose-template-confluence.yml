@@ -35,6 +35,7 @@ services:
        -Dapplinks.allow.all.hosts=true
        -Datlassian.dev.mode=true
        -Dupm.plugin.upload.enabled=true
+       -Dupm.pac.disable=true
        -Dquickreload.dirs=/plugin"
       - "ATL_PROXY_NAME=${PROXY_DOMAIN}"
       - "ATL_PROXY_PORT=${PROXY_PORT}"

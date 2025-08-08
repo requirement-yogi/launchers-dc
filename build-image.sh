@@ -244,6 +244,11 @@ if [ ! -f "./docker/tmp/quickreload-${QR_VERSION}.jar" ] || [ ! -f "./docker/tmp
     echo "/plugin" > ./docker/tmp/quickreload.properties # Necessary to build the image
 fi
 
+# Create the trust store
+cd docker/tmp
+../download-atlassian-certs.sh
+cd ../..
+
 ## Download the MySQL driver
 MYSQL_JAR_LOCATION="docker/tmp/mysql-connector-j-${MYSQL_VERSION}.jar"
 if [ ! -f "${MYSQL_JAR_LOCATION}" ] ; then

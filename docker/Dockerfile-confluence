@@ -18,12 +18,19 @@ ARG MYSQL_VERSION
 RUN apt-get clean -y && apt-get update -y && apt-get install postgresql-client iputils-ping curl net-tools -y;
 VOLUME /plugin
 
+RUN mkdir -p                                      /var/atlassian/application-data/confluence/upmconfig/truststore
+COPY ./tmp/upmconfig_truststore/truststore.jks    /var/atlassian/application-data/confluence/upmconfig/truststore/truststore.jks
+
 RUN mkdir -p                                      /opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/
 RUN mkdir -p                                      /opt/atlassian/confluence/confluence/WEB-INF/lib/
 COPY ./tmp/quickreload-${QR_VERSION}.jar          /opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/quickreload.jar
 COPY ./tmp/mysql-connector-j-${MYSQL_VERSION}.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/mysql-connector-j-${MYSQL_VERSION}.jar
 COPY ./tmp/quickreload.properties  /var/atlassian/application-data/confluence/quickreload.properties
 RUN chown -R confluence:confluence /var/atlassian/application-data/confluence
+RUN chown -R root:confluence       /var/atlassian/application-data/confluence/upmconfig
+RUN chmod ug=rx,o=                 /var/atlassian/application-data/confluence/upmconfig
+RUN chmod ug=rx,o=                 /var/atlassian/application-data/confluence/upmconfig/truststore
+RUN chmod ug=r,o=                  /var/atlassian/application-data/confluence/upmconfig/truststore/truststore.jks
 
 RUN echo "log4j.logger.com.atlassian.velocity.htmlsafe.introspection=ERROR" >> /opt/atlassian/confluence/confluence/WEB-INF/classes/log4j.properties
 RUN echo "log4j.logger.com.atlassian.confluence.cache=ERROR" >> /opt/atlassian/confluence/confluence/WEB-INF/classes/log4j.properties
