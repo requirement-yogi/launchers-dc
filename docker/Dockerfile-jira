@@ -20,6 +20,10 @@ ARG JIRA_DBCONFIG_FILE
 RUN apt-get clean -y && apt-get update -y && apt-get install postgresql-client iputils-ping curl net-tools -y;
 VOLUME /plugin
 
+RUN mkdir -p                                      $JIRA_HOME/upmconfig/truststore
+COPY ./tmp/upmconfig_truststore/truststore.jks    $JIRA_HOME/upmconfig/truststore/truststore.jks
+RUN echo "atlassian.upm.signature.check.disabled=true" > $JIRA_HOME/upmconfig/upm.properties
+
 RUN mkdir -p                       $JIRA_HOME/plugins/installed-plugins
 RUN mkdir -p                       $JIRA_HOME/log
 RUN mkdir -p                       /opt/atlassian/jira/lib
@@ -32,6 +36,11 @@ COPY ./tmp/quickreload.properties  $JIRA_HOME/quickreload.properties
 COPY ./$JIRA_DBCONFIG_FILE           $JIRA_HOME/dbconfig.xml
 
 RUN chown -R $RUN_USER:$RUN_USER   $JIRA_HOME
+RUN chown -R root:$RUN_USER        $JIRA_HOME/upmconfig
+RUN chmod ug=rx,o=                 $JIRA_HOME/upmconfig
+RUN chmod ug=rx,o=                 $JIRA_HOME/upmconfig/truststore
+RUN chmod u=rw,g=r,o=              $JIRA_HOME/upmconfig/upm.properties
+RUN chmod u=rw,g=r,o=              $JIRA_HOME/upmconfig/truststore/truststore.jks
 
 
 # It's useless because the correct file to modify is log4j2.xml

@@ -70,7 +70,7 @@ services:
   # If you want to access this DB from your host, please use
   # 'postgres' instead of 'localhost'
   postgres:
-    image: postgres:14
+    image: postgres:${PG_VERSION}
     ports:
       - ${PORT_DB}:5432
     environment:

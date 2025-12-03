@@ -13,6 +13,7 @@ elif [[ "$APP" == "jira" ]] ; then
     PORT_INTERNAL="8080"
 fi
 CONTEXT_PATH="/${LETTER}-app"
+PG_VERSION=14
 
 if [[ "$APP" == "confluence" ]] ; then
     if [[ "$2" == "7.19."* ]] ; then
@@ -40,39 +41,59 @@ if [[ "$APP" == "confluence" ]] ; then
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "9.0."* ]] ; then
+        PG_VERSION=16
         PORT_HTTP="2004"
         PORT_DEBUG="5009"
         PORT_DB="5404"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "9.1."* ]] ; then
+        PG_VERSION=16
         PORT_HTTP="2010"
         PORT_DEBUG="5014"
         PORT_DB="5410"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "9.2."* ]] ; then
+        PG_VERSION=16
         PORT_HTTP="2011"
         PORT_DEBUG="5015"
         PORT_DB="5411"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "9.3."* ]] ; then
+        PG_VERSION=16
         PORT_HTTP="2012"
         PORT_DEBUG="5016"
         PORT_DB="5412"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "9.4."* ]] ; then
+        PG_VERSION=16
         PORT_HTTP="2013"
         PORT_DEBUG="5017"
         PORT_DB="5413"
         JDK="jdk17"
         BASE_IMAGE="eclipse-temurin:17"
     elif [[ "$2" == "10.0."* ]] ; then
+        PG_VERSION=17
         PORT_HTTP="2014"
         PORT_DEBUG="5018"
         PORT_DB="5414"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+    elif [[ "$2" == "10.1."* ]] ; then
+        PG_VERSION=17
+        PORT_HTTP="2015"
+        PORT_DEBUG="5019"
+        PORT_DB="5415"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+    elif [[ "$2" == "10.2."* ]] ; then
+        PG_VERSION=17
+        PORT_HTTP="2016"
+        PORT_DEBUG="5020"
+        PORT_DB="5416"
         JDK="jdk21"
         BASE_IMAGE="eclipse-temurin:21"
     else
@@ -147,6 +168,21 @@ elif [[ "$APP" == "jira" ]] ; then
         PORT_DB="5435"
         JDK="jdk21"
         BASE_IMAGE="eclipse-temurin:21"
+        PG_VERSION=17
+    elif [[ "$2" == "11.1."* ]] ; then
+        PORT_HTTP="2036"
+        PORT_DEBUG="5036"
+        PORT_DB="5436"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+        PG_VERSION=17
+    elif [[ "$2" == "11.2."* ]] ; then
+        PORT_HTTP="2037"
+        PORT_DEBUG="5037"
+        PORT_DB="5437"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+        PG_VERSION=17
     else
         echo
         echo "Unknown Jira version: $2"
@@ -229,6 +265,8 @@ echo "SKIP_BUILDING=$SKIP_BUILDING"
 echo "APPLE_SUFFIX=$APPLE_SUFFIX"
 echo "BASE_IMAGE=$BASE_IMAGE"
 echo "JIRA_DBCONFIG_FILE=$JIRA_DBCONFIG_FILE"
+echo "PG_VERSION=$PG_VERSION"
+echo "MYSQL_VERSION=$MYSQL_VERSION"
 
 #### First, download the jar
 
@@ -334,6 +372,7 @@ export DOLLAR="$"
 export QR_VERSION
 export MYSQL_JAR_LOCATION
 export MYSQL_VERSION
+export PG_VERSION
 
 FOLDER_NAME="${APP}-${APP_VERSION}${APPLE_SUFFIX}"
 
