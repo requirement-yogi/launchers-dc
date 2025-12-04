@@ -183,6 +183,13 @@ elif [[ "$APP" == "jira" ]] ; then
         JDK="jdk21"
         BASE_IMAGE="eclipse-temurin:21"
         PG_VERSION=17
+    elif [[ "$2" == "11.3."* ]] ; then
+        PORT_HTTP="2038"
+        PORT_DEBUG="5038"
+        PORT_DB="5438"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+        PG_VERSION=17
     else
         echo
         echo "Unknown Jira version: $2"
