@@ -10,19 +10,19 @@
 # ${PROXY_SCHEME}://${PROXY_DOMAIN}:${PROXY_PORT}${CONTEXT_PATH}
 #
 # Get the license from https://requirementyogi.atlassian.net/wiki/spaces/TEAM/pages/1844413025/License+keys
-# To set up the database in Confluence:
-#    jdbc:postgresql://postgres:5432/confluence # In the setup wizard, replace 'lcoalhost' with 'postgres'
+# To set up the database in Jira:
+#    jdbc:postgresql://postgres:5432/jira # In the setup wizard, replace 'lcoalhost' with 'postgres'
 #    jdbc:postgresql://localhost:${PORT_DB}/${APP} # For IntelliJ
-#    Username: confluence
-#    Password: confluence
+#    Username: jira
+#    Password: jira
 # Please your jars in `realpath ./quickreload` to be reloaded
-# To set up the database in IntelliJ: jdbc:postgresql://localhost:${PORT_DB}/confluence
-# Log files are in ./logs/atlassian-confluence.log
+# To set up the database in IntelliJ: jdbc:postgresql://localhost:${PORT_DB}/jira
+# Log files are in ./logs/atlassian-jira.log
 
 services:
 
-  confluence:
-    image: "yogi:confluence-${APP_VERSION}${APPLE_SUFFIX}"
+  jsd:
+    image: "yogi:jsd-${APP_VERSION}${APPLE_SUFFIX}"
     environment:
       - "JVM_SUPPORT_RECOMMENDED_ARGS=-Xdebug
        -Xrunjdwp:transport=dt_socket,address=*:5005,server=y,suspend=n
@@ -33,9 +33,7 @@ services:
        -Dapplinks.allow.all.hosts=true
        -Datlassian.dev.mode=true
        -Dupm.plugin.upload.enabled=true
-       -Dupm.pac.disable=true
-       -Dquickreload.dirs=/plugin
-       -Dquickreload.tracked=/plugin"
+       -Dquickreload.dirs=/plugin"
       - "ATL_PROXY_NAME=${PROXY_DOMAIN}"
       - "ATL_PROXY_PORT=${PROXY_PORT}"
       - "ATL_TOMCAT_CONTEXTPATH=${CONTEXT_PATH}"
@@ -43,18 +41,18 @@ services:
       - "ATL_TOMCAT_SECURE=${PROXY_SECURE}"
     ports:
       - ${PORT_DEBUG}:5005
-      - ${PORT_HTTP}:8090
+      - ${PORT_HTTP}:8080
     volumes:
       - "./quickreload:/plugin"
-      # Activate the following line if you want to access the confluence-home directory
-      # - "./confluence-home:/var/atlassian/application-data/confluence"
-      - "./logs:/var/atlassian/application-data/confluence/logs"
+      # Activate the following line if you want to access the jira-home directory
+      # - "./jira-home:/var/atlassian/application-data/jira"
+      - "./logs:/var/atlassian/application-data/jira/log"
     networks:
       default:
       shared-network:
 
   # Redirects http://${LETTER}${APP_VERSION}.local:${PORT_HTTP} inside the network,
-  # to http://confluence:${PORT_INTERNAL}
+  # to http://jira:${PORT_INTERNAL}
   nginx:
     image: nginx:1.24.0-alpine
     container_name: "${LETTER}${APP_VERSION}.local"
@@ -65,7 +63,7 @@ services:
       shared-network:
 
   # Use the hostname 'postgres' from inside the container, i.e.:
-  # jdbc:postgresql://localhost:5432/confluence
+  # jdbc:postgresql://localhost:5432/jira
   # If you want to access this DB from your host, please use
   # 'postgres' instead of 'localhost'
   postgres:
@@ -73,9 +71,9 @@ services:
     ports:
       - ${PORT_DB}:5432
     environment:
-      - POSTGRES_USER=confluence
-      - POSTGRES_PASSWORD=confluence
-      - POSTGRES_DB=confluence
+      - POSTGRES_USER=jira
+      - POSTGRES_PASSWORD=jira
+      - POSTGRES_DB=jira
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
       - LANG=C
     # volumes:
@@ -84,15 +82,15 @@ services:
       - default
 
   # Uncomment this section if you want to use MySQL as a database
-  # URL from Confluence: jdbc:mysql://mysql/confluence
+  # URL from Confluence: jdbc:mysql://mysql/jira
   # mysql:
   #   image: mysql:8.0
   #   ports:
-  #     - 3102:3306
+  #     - 3103:3306
   #   environment:
-  #     MYSQL_DATABASE: "confluence"
-  #     MYSQL_USER: "confluence"
-  #     MYSQL_PASSWORD: "confluence"
+  #     MYSQL_DATABASE: "jira"
+  #     MYSQL_USER: "jira"
+  #     MYSQL_PASSWORD: "jira"
   #     MYSQL_ROOT_PASSWORD: "root"
   #   command: [
   #     'mysqld',

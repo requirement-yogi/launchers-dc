@@ -11,6 +11,8 @@ if [[ "$APP" == "confluence" ]] ; then
     PORT_INTERNAL="8090"
 elif [[ "$APP" == "jira" ]] ; then
     PORT_INTERNAL="8080"
+elif [[ "$APP" == "jsd" ]] ; then
+    PORT_INTERNAL="8080"
 fi
 CONTEXT_PATH="/${LETTER}-app"
 PG_VERSION=14
@@ -195,6 +197,31 @@ elif [[ "$APP" == "jira" ]] ; then
         echo "Unknown Jira version: $2"
         echo "See https://hub.docker.com/r/atlassian/jira-software"
         echo "https://www.atlassian.com/software/jira/download-archives"
+        echo
+        exit 1
+    fi
+
+elif [[ "$APP" == "jsd" ]] ; then
+
+    if [[ "$2" == "10.3."* ]] ; then
+        PORT_HTTP="2030"
+        PORT_DEBUG="5030"
+        PORT_DB="5430"
+        JDK="jdk17"
+        BASE_IMAGE="eclipse-temurin:17"
+
+    elif [[ "$2" == "11.3."* ]] ; then
+        PORT_HTTP="2038"
+        PORT_DEBUG="5038"
+        PORT_DB="5438"
+        JDK="jdk21"
+        BASE_IMAGE="eclipse-temurin:21"
+        PG_VERSION=17
+    else
+        echo
+        echo "Unknown JSD version: $2"
+        echo "See https://hub.docker.com/r/atlassian/jira-servicemanagement"
+        echo "https://www.atlassian.com/software/jira/service-management/download-archives"
         echo
         exit 1
     fi
@@ -384,6 +411,21 @@ export PG_VERSION
 FOLDER_NAME="${APP}-${APP_VERSION}${APPLE_SUFFIX}"
 
 [ -d "./${FOLDER_NAME}" ] || mkdir ${FOLDER_NAME}
+
+# QuickReload 6.x requires a pom.xml in the watched directory (it's designed for Maven projects).
+# Without it, it silently ignores the directory. Create a minimal one if not already there.
+[ -d "./${FOLDER_NAME}/quickreload" ] || mkdir "${FOLDER_NAME}/quickreload"
+if [ ! -f "./${FOLDER_NAME}/quickreload/pom.xml" ] ; then
+    cat > "./${FOLDER_NAME}/quickreload/pom.xml" << 'POMEOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>local</groupId>
+  <artifactId>quickreload-dir</artifactId>
+  <version>1.0</version>
+</project>
+POMEOF
+fi
 
 # It interprets the variables
 envsubst < docker/docker-compose-template-${APP}.yml > ${FOLDER_NAME}/docker-compose.yml

@@ -1,5 +1,3 @@
-version: '3.1'
-
 # Instructions:
 # docker compose up [--detach]
 # docker compose logs --follow
@@ -35,7 +33,8 @@ services:
        -Dapplinks.allow.all.hosts=true
        -Datlassian.dev.mode=true
        -Dupm.plugin.upload.enabled=true
-       -Dquickreload.dirs=/plugin"
+       -Dquickreload.dirs=/plugin
+       -Dquickreload.tracked=/plugin"
       - "ATL_PROXY_NAME=${PROXY_DOMAIN}"
       - "ATL_PROXY_PORT=${PROXY_PORT}"
       - "ATL_TOMCAT_CONTEXTPATH=${CONTEXT_PATH}"
