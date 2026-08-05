@@ -4,7 +4,7 @@ APP="$1"
 APP_VERSION="$2"
 LETTER="${APP:0:1}"
 QR_VERSION="6.1.2"
-MYSQL_VERSION="9.1.0"
+MYSQL_VERSION="9.7.0"
 JIRA_DBCONFIG_FILE="jira-dbconfig.xml"
 
 if [[ "$APP" == "confluence" ]] ; then
@@ -331,7 +331,7 @@ cd ../..
 MYSQL_JAR_LOCATION="docker/tmp/mysql-connector-j-${MYSQL_VERSION}.jar"
 if [ ! -f "${MYSQL_JAR_LOCATION}" ] ; then
     cd docker/tmp
-    [ -f "docker/tmp/mysql-connector-j-${MYSQL_VERSION}.tar.xf" ] || curl -O https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-j-${MYSQL_VERSION}.tar.gz
+    [ -f "docker/tmp/mysql-connector-j-${MYSQL_VERSION}.tar.xf" ] || curl -fO https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-j-${MYSQL_VERSION}.tar.gz
     tar xf mysql-connector-j-${MYSQL_VERSION}.tar.gz
     cp mysql-connector-j-${MYSQL_VERSION}/mysql-connector-j-${MYSQL_VERSION}.jar ./
     cd ../..
