@@ -5,7 +5,7 @@ This repository builds Docker images that can be launched for every supported ve
 ## How to use
 
 ```
-./create-image.sh confluence 9.4.0
+./build-image.sh confluence 9.4.0
 vi /etc/hosts # Add the local domain name of this Confluence to your localhost[1]
 cd confluence-9.4.0
 docker compose up --detach
